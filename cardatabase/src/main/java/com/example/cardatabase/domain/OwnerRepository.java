@@ -1,4 +1,7 @@
 package com.example.cardatabase.domain;
 
-public interface OwnerRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface OwnerRepository extends JpaRepository<Owner, Long> {
+
 }
