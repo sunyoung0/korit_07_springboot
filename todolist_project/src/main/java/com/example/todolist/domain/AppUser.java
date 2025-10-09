@@ -15,7 +15,6 @@ import java.util.List;
 public class AppUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "app_user_id")
     private Long id;
 
     @Column(nullable = false, unique = true)

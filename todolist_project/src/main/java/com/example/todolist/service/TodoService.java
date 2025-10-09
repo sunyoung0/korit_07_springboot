@@ -32,11 +32,6 @@ public class TodoService {
 
     // Todo 작성
     public Todo addTodo(Todo todo) {
-//        Optional<AppUser> appUser = appUserRepository.findById(userId);
-//        if(appUser.isPresent()) {
-//            AppUser currentUser = appUser.get();
-//            todo.setAppUser = currentUser;
-//        }
         return todoRepository.save(todo);
     }
 
@@ -60,15 +55,13 @@ public class TodoService {
     }
 
     // Todo 완료 상태 변경 updateTodoStatus
-    public void updateTodoStatus(Long id, Todo todo) {
+    public Optional<Todo> updateTodoStatus(Long id) {
+        return todoRepository.findById(id)
+                .map(todo -> {
+                    todo.setCompleted(!todo.isCompleted());
+                    return todoRepository.save(todo);
+                });
     }
-    /**
-     **`updateTodoStatus(Long id)`**: 특정 `id`의 할 일 완료 상태를 변경(toggle)합니다.
-
-     - **로직**: `id`로 `Todo` 항목을 찾습니다. `isCompleted` 값을 현재 상태의 반대(`!isCompleted`)로 변경하고 저장합니다.
-     - **예시**: `false` 였으면 `true`로, `true` 였으면 `false`로 변경됩니다.
-     */
-
 
     // clearCompletedTodos
     public boolean clearCompletedTodos(Long id) {

@@ -33,7 +33,4 @@ public class TodolistApplication implements CommandLineRunner {
 
 	}
 
-
-
-
 }
