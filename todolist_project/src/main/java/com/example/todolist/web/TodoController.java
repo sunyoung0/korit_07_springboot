@@ -1,6 +1,7 @@
 package com.example.todolist.web;
 
 import com.example.todolist.domain.Todo;
+import com.example.todolist.dto.TodoRequestRecord;
 import com.example.todolist.service.TodoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +34,8 @@ public class TodoController {
 
     // 작성
     @PostMapping("/todos")
-    public ResponseEntity<Todo> addTodo(@RequestBody Todo todo) {
-        Todo savedTodo = todoService.addTodo(todo);
+    public ResponseEntity<Todo> addTodo(@RequestBody TodoRequestRecord todoRecord) {
+        Todo savedTodo = todoService.addTodo(todoRecord);
         return new ResponseEntity<>(savedTodo, HttpStatus.CREATED);
     }
 
@@ -65,9 +66,10 @@ public class TodoController {
     }
 
     // 현재 로그인된 사용자의 완료된(isCompleted = true) 모든 할 일을 삭제
-//    @DeleteMapping("/todos/completed")
-//    public ResponseEntity<Todo> clearCompletedTodos() {
-//
-//    }
+    @DeleteMapping("/todos/completed")
+    public ResponseEntity<Void> clearCompletedTodos() {
+        todoService.clearCompletedTodos();
+        return ResponseEntity.noContent().build();
+    }
 
 }

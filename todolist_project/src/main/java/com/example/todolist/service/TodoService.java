@@ -1,11 +1,17 @@
 package com.example.todolist.service;
 
+import com.example.todolist.domain.AppUser;
 import com.example.todolist.domain.AppUserRepository;
 import com.example.todolist.domain.Todo;
 import com.example.todolist.domain.TodoRepository;
+import com.example.todolist.dto.TodoRequestRecord;
+import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,19 +26,37 @@ public class TodoService {
         this.appUserRepository = appUserRepository;
     }
 
+    // 현재 로그인 한 유저 정보
+    private AppUser getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        return appUserRepository.findByUsername(username).orElseThrow(() -> new EntityNotFoundException("User를 찾을 수 없습니다."));
+    }
+
+    // 본인 확인 로직을 추가.
+    private void checkOwnerShip(Todo todo) throws AccessDeniedException {
+        if(!todo.getAppuser().equals(getCurrentUser())) {
+            throw new AccessDeniedException(("해당 todo에 접근할 수 없습니다."));
+        }
+    }
+
     // Todo 전체 조회
+    @Transactional
     public List<Todo> getTodos() {
         return todoRepository.findAll();
     }
 
     // Todo id 별 조회
+    @Transactional
     public Optional<Todo> getTodoById(Long id) {
         return todoRepository.findById(id);
     }
 
     // Todo 작성
-    public Todo addTodo(Todo todo) {
-        return todoRepository.save(todo);
+    public Todo addTodo(TodoRequestRecord todoRecord) {
+        AppUser currentUser = getCurrentUser();
+        Todo newTodo = new Todo(todoRecord.content(), currentUser);
+        return todoRepository.save(newTodo);
     }
 
     // Todo 내용 수정
@@ -63,14 +87,10 @@ public class TodoService {
                 });
     }
 
-    // clearCompletedTodos
-    public boolean clearCompletedTodos(Long id) {
-        return true;
+    // 완료된 할 일 전체를 삭제하는 로직
+    public void clearCompletedTodos() {
+        AppUser currentUser = getCurrentUser();
+        todoRepository.deleteByAppuserAndIsCompleted(currentUser, true);
     }
-    /**
-     - **`clearCompletedTodos()`**: 현재 로그인된 사용자의 완료된(`isCompleted = true`) 모든 할 일을 삭제합니다.
-
-     - **로직**: 현재 인증된 사용자의 `id`를 가져옵니다. 해당 사용자의 `Todo` 목록 중 `isCompleted`가 `true`인 항목들을 모두 찾아서 한 번에 삭제합니다.
-     */
 
 }
