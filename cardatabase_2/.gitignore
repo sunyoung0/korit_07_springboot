@@ -37,3 +37,4 @@ out/
 .vscode/
 
 /src/main/java/com/example/cardatabase/SecurityConfig.java
+/src/main/resources/application.properties
