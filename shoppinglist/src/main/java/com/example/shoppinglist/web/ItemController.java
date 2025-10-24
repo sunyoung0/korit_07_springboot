@@ -7,10 +7,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.shoppinglist.service.ItemService;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/shopping")
+@RequestMapping("/items")
 public class ItemController {
 
     private final ItemService itemService;
@@ -31,5 +32,19 @@ public class ItemController {
         Item createItem = itemService.createItem(itemRequestDto);
         return new ResponseEntity<>(createItem, HttpStatus.CREATED);
     }
+
+    // item 수정
+    @PutMapping("/{id}")
+    public ResponseEntity<Item> updateItem(Long id, @RequestBody ItemRequestDto updateDto) throws AccessDeniedException {
+        return ResponseEntity.ok(itemService.updateItem(id, updateDto));
+    }
+
+    // item 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteItem(Long id) throws AccessDeniedException {
+        itemService.deleteItem(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 }

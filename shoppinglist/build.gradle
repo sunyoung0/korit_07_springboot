@@ -36,6 +36,13 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
+
+	// Spring Data REST 의존성 추가 영역
+	implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+
+	// SpringSecurity 관련 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	testImplementation 'org.springframework.boot:spring-boot-starter-security'
 }
 
 tasks.named('test') {

@@ -3,9 +3,11 @@ package com.example.shoppinglist.service;
 import com.example.shoppinglist.domain.Item;
 import com.example.shoppinglist.domain.ItemRepository;
 import com.example.shoppinglist.dto.ItemRequestDto;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Service
@@ -31,7 +33,25 @@ public class ItemService {
         return itemRepository.save(newItem);
     }
 
-    // 쇼핑리스트 제품 등록하기
+    // ITEM 수정하기
+    @Transactional
+    public Item updateItem(Long id, ItemRequestDto updateDto) throws AccessDeniedException {
+        Item item = itemRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 id를 가진 todo가 없습니다. id : " + id));
+
+        item.setProduct(updateDto.getProduct());
+        item.setAmount(updateDto.getAmount());
+
+        return itemRepository.save(item);
+    }
+
+    // ITEM 삭제하기
+    public void deleteItem(Long id) {
+        Item item = itemRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("해당 id를 가진 todo가 없습니다. id : " + id));
+
+        itemRepository.delete(item);
+    }
+
+
 
 
 

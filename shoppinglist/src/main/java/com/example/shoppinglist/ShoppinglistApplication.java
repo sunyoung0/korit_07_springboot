@@ -21,7 +21,9 @@ public class ShoppinglistApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Item item = new Item("책", "2");
-		itemRepository.save(item);
+//		Item item = new Item("책", "2");
+		itemRepository.save(new Item("책", "20"));
+		itemRepository.save(new Item("자동차", "1"));
+		itemRepository.save(new Item("커피", "5"));
 	}
 }
